@@ -1,4 +1,4 @@
-/*
+﻿/*
   ==============================================================================
 
     This file contains the basic framework code for a JUCE plugin processor.
@@ -52,6 +52,16 @@ public:
     //==============================================================================
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
+
+
+    // edit 1
+// returns a list of all parametes
+    static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
+
+       
+    //juce::AudioProcessorValueTreeState apvts{*this, nullptr, "Parameters", createParameterLayout()};
+    juce::AudioProcessorValueTreeState apvt;
+
 
 private:
     //==============================================================================

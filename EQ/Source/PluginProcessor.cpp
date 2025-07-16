@@ -8,6 +8,7 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+//#include <include_juce_audio_processors.cpp>
 
 //==============================================================================
 EQAudioProcessor::EQAudioProcessor()
@@ -19,13 +20,17 @@ EQAudioProcessor::EQAudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       )
+                       ),apvt(*this, nullptr, "Parameters", createParameterLayout())
+  
+               
 #endif
+    
 {
 }
 
 EQAudioProcessor::~EQAudioProcessor()
 {
+  
 }
 
 //==============================================================================
@@ -166,7 +171,10 @@ bool EQAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor* EQAudioProcessor::createEditor()
 {
-    return new EQAudioProcessorEditor (*this);
+    //return new EQAudioProcessorEditor (*this);
+    // type of ui component that displays params
+    return new juce::GenericAudioProcessorEditor(*this);
+
 }
 
 //==============================================================================
@@ -183,9 +191,56 @@ void EQAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
     // whose contents will have been created by the getStateInformation() call.
 }
 
+
+
 //==============================================================================
 // This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new EQAudioProcessor();
+}
+
+
+//edit 1
+// vaketeb chem mier damatebuli funcqiis deklaracias romelic headershi maqvs
+juce::AudioProcessorValueTreeState::ParameterLayout
+EQAudioProcessor::createParameterLayout() {
+    // class romelic sheicavs ranged audio parametrebs anu float mnishvnelobas guidan romelic gadaecema AudioProcessors
+    juce::AudioProcessorValueTreeState::ParameterLayout layout;
+
+    // parametrebi 
+    layout.add(std::make_unique<juce::AudioParameterFloat>("LowCut Freq", "LowCut Freq",
+        juce::NormalisableRange<float>(20.f, 20000.f, 1.f, 1.f), 20.f));
+
+    layout.add(std::make_unique<juce::AudioParameterFloat>("HighCut Freq", "HightCut Freq",
+        juce::NormalisableRange<float>(20.f, 20000.f, 1.f, 1.f), 20000.f));
+
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Peak Freq", "Peak Freq",
+        juce::NormalisableRange<float>(20.f, 20000.f, 1.f, 1.f), 750.f));
+
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Peak Gain", "Peak Gain",
+        juce::NormalisableRange<float>(-24.f, 24.f, 0.5f, 1.f), 0.0f));
+
+    // quality control how tight or how wide the peak band is
+    // high q means narrow q and wide means low it doesnt have units and thats why 
+
+
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Peak Quality", "Peak Quality",
+        juce::NormalisableRange<float>(0.1f, 10.f, 0.05f, 1.f), 1.f));
+
+    // creates audio parameter with choices
+
+
+    juce::StringArray stringArray;
+    for (int i = 0; i < 4; i++) {
+        juce::String str;
+        str << (12 + i * 12);
+        str << "db/Oct";
+        stringArray.add(str);
+    }
+
+
+    // layout.add(std::make_unique<juce::AudioParameterChoice>("LowCut Slope", "LowCut Slope".stringArray, 0));
+    // layout.add(std::make_unique<juce::AudioParameterChoice>("HighCut Slope", "HighCut Slope".stringArray, 0));
+    return layout;
 }
